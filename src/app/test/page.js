@@ -2,8 +2,11 @@
 import ELK from 'elkjs';
 
 import { ReactFlow, Background, Controls, Node, Edge,getSmoothStepPath, BaseEdge,Handle,Position} from '@xyflow/react';
+import { useGraphStore } from '@/actions/buildGraphTest.js';
 import {useState,useEffect} from 'react';
+
 import '@xyflow/react/dist/style.css';
+
 import { CustomContainer}  from '../components/customContainer.jsx';
 const nodeTypes = {
     customBox: CustomContainer,
@@ -12,10 +15,16 @@ const nodeTypes = {
 const elk = new ELK();
 
 
+
 export default  function TestPage() {
 const [graph, setGraph] = useState(null);
 const [nodes, setNodes] = useState([]);
 const [edges, setEdges] = useState([]);
+
+const setStoreNodes = useGraphStore((state) => state.setNodes);
+const setStoreEdges = useGraphStore((state) => state.setEdges);
+const setStoreGraph = useGraphStore((state) => state.setGraph);
+
 useEffect(() => {
 async function calculateLayout(){
 
@@ -84,7 +93,7 @@ data:{
     )
 
 },
-style:{backgroundColor:'#f0f0f0', border:'1px solid #000', padding:'10px',width:node.width, height:node.height},
+style:{padding:'10px',width:node.width, height:node.height},
 
 });
 node.children.forEach((childNode)=>{
@@ -104,11 +113,15 @@ node.children.forEach((childNode)=>{
 else{
 newNodes.push({
     id:node.id,
+    type:'customBox',
     position:{x:node.x, y:node.y},
-    data:{label:node.id}
+    data:{label:node.id},
+    style:{width:node.width, height:node.height},
+
 });
 }
     });
+    setStoreNodes(newNodes);
     setNodes(newNodes);
     
     const newEdges=[]
@@ -135,10 +148,12 @@ const testEdges=[
     { id: 'e2', source: '2', target: '3', type: 'smoothstep' },
     { id: 'e3', source: '3', target: '4', type: 'smoothstep' }
 ];
+    setStoreEdges(newEdges);
     setEdges(testEdges);
 }
 
         calculateLayout(); 
+
 },[]);
 console.log('Nodes:', nodes);
 console.log('Edges:', edges);
@@ -190,7 +205,7 @@ const trialEdges=[
         <div className="w-full h-screen text-black">
         <h1>Test Page</h1>
         <p>This is a test page for the family tree application.</p>
-<ReactFlow nodes={nodes} edges={trialEdges} nodeTypes={nodeTypes} fitView>
+<ReactFlow nodes={useGraphStore((state) => state.Nodes)} edges={useGraphStore((state) => state.Edges)} nodeTypes={nodeTypes} fitView>
 <Background />
 <Controls />
 </ReactFlow>

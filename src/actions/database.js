@@ -206,7 +206,7 @@ if(error){
     return [];
 }
 else{
-    console.log("Data fetched from people table:", data);
+
     return data;
 }
 }
@@ -223,7 +223,7 @@ export async function fetchUnions(){
             return [];
         }
         else{
-            console.log("Data fetched from unions table:", data);
+
             return data;
         }
     }
