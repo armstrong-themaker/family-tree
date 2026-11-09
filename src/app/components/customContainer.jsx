@@ -138,7 +138,7 @@ export function regularContainer(props) {
     const GraphNodes = useGraphStore((state) => state.GraphNodes);
     const nodes = useGraphStore((state) => state.Nodes);
     const trialNodes = useGraphStore.getState().Nodes;
-
+    const storeEdges = useGraphStore((state) => state.Edges);
 
     console.log("Nodes in regularContainer:", nodes);
     console.log("Trial Nodes in regularContainer:", trialNodes);
@@ -155,24 +155,47 @@ export function regularContainer(props) {
             if (spouse) {
                 const spouseId = spouse.partner_1_id === child.id ? spouse.partner_2_id : spouse.partner_1_id;
                 const spouseMember = familyMembers.find(member => member.id === spouseId);
-             if(!showedChildren){   
                 setStoreNodes(spouseMember);
-             }else{
-                removeStoreNode(spouseMember.id);
-            }
 
-            }
-if(!showedChildren){
+            }    
             setStoreNodes(child);
-}
-else{
-    removeStoreNode(child.id);
-}
+
         });
 
         console.log("Current nodes in store:", nodes);
     }
 
+function removeNode(NodeId) {
+
+console.log("Removing node:", NodeId);
+let children=[];
+        
+storeEdges.forEach(edge => {
+   if(edge.source===NodeId){
+        children.push(edge);
+   }
+});
+if(children.length===0){
+return;
+}
+else{
+children.forEach(child => {
+    const childId= child.target;
+    removeNode(childId);
+    if(childId.length>36){
+        const spouse1Id= childId.slice(0,36);
+        const spouse2Id= childId.slice(37);
+        removeStoreNode(spouse1Id);
+        removeStoreNode(spouse2Id);
+    }
+    else{
+    removeStoreNode(childId);
+    }
+});
+}
+    }
+
+    
 
 
     const MotionChevronDown = motion.create(ChevronDown);
@@ -204,7 +227,12 @@ else{
                     {console.log("Rendering button for node:", props.id)}
                     {console.log("Rendering button for node:", props.id)}
                     <motion.button whileTap={{ scale: 0.95 }} whileHover={{ scale: 1.05 }} className="border-none bg-accent text-white hover:cursor-pointer rounded-full text-[4px]" onClick={() => {
-                        AddNodes(props.id, familyMembers, unions)
+                        if(!showedChildren){
+                            AddNodes(props.id, familyMembers, unions)
+                        }
+                        else{
+                            removeNode(props.id);
+                        }
                         setShowedChildren(!showedChildren);
                     }}>
                         {showedChildren ? (

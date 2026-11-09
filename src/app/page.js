@@ -142,9 +142,9 @@ reactFlowNodes.push({
 console.log('Nodes:', reactFlowNodes);
 setNodes(reactFlowNodes);
 reactFlowNodes.forEach((node) => {
-    if(!node.parentId){
+    
     setGraphNodes(node);
-    }
+    
 });
 const reactFlowEdges = [];
 layoutedGraph.edges.forEach((edge) => {
@@ -154,6 +154,8 @@ layoutedGraph.edges.forEach((edge) => {
         target: edge.target
     });
 });
+console.log("ReactFlowEdges calculated:", reactFlowEdges);
+setStoreEdges(reactFlowEdges);
 setEdges(reactFlowEdges);
 };
 ExpandGraph();

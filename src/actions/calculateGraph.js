@@ -10,6 +10,8 @@ if (memberId===null){
     return true;
 }
 const member=familyMembers.find(member=>member.id===memberId);
+console.log("MemberId:", memberId);
+console.log("Family Members:", familyMembers);
 console.log("Checking if member is an outsider:", member);
 if(member.name=="Titus, Njoki & Macharia Family"){
         return false;
@@ -178,7 +180,7 @@ const marriagesInNodes = nodes
     return undefined; // If no spouse, return undefined temporarily
   })
   .filter(item => item !== undefined); // ✅ Cleans up the array so only active marriages remain
-
+console.log("Checking nodes: ",nodes)
 console.log('Marriages in Nodes:', marriagesInNodes);
 
 //Create edges for spouse relationships
